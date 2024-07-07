@@ -6,14 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@RestControllerAdvice
+@ControllerAdvice
 public class ErrorHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -29,4 +29,9 @@ public class ErrorHandler {
         return errorResponse;
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String,String>> handleValidationErrors(Exception ex) {
+        String errors = ex.getMessage();
+        return ResponseEntity.badRequest().body(Map.of("errors", errors));
+    }
 }
